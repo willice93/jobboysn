@@ -1,0 +1,111 @@
+#------------------------------------------------------------
+#        Script MySQL.
+#------------------------------------------------------------
+
+
+#------------------------------------------------------------
+# Table: Client
+#------------------------------------------------------------
+
+CREATE TABLE Client(
+        id_client      Int  Auto_increment  NOT NULL ,
+        Nom            Varchar (50) NOT NULL ,
+        Prenom         Varchar (50) NOT NULL ,
+        Date_naissance Date NOT NULL ,
+        Telephone      Int NOT NULL ,
+        email          Varchar (50) NOT NULL
+	,CONSTRAINT Client_PK PRIMARY KEY (id_client)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Commande
+#------------------------------------------------------------
+
+CREATE TABLE Commande(
+        id_commande Int  Auto_increment  NOT NULL ,
+        date        Date NOT NULL ,
+        id_client   Int NOT NULL
+	,CONSTRAINT Commande_PK PRIMARY KEY (id_commande)
+
+	,CONSTRAINT Commande_Client_FK FOREIGN KEY (id_client) REFERENCES Client(id_client)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: membre
+#------------------------------------------------------------
+
+CREATE TABLE membre(
+        login    Varchar (50) NOT NULL ,
+        password Varchar (50) NOT NULL
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Admin
+#------------------------------------------------------------
+
+CREATE TABLE Admin(
+        id_admin Int  Auto_increment  NOT NULL ,
+        login    Varchar (50) NOT NULL ,
+        password Varchar (50) NOT NULL
+	,CONSTRAINT Admin_PK PRIMARY KEY (id_admin)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Annonce
+#------------------------------------------------------------
+
+CREATE TABLE Annonce(
+        num_annonc  Int  Auto_increment  NOT NULL ,
+        titre       Varchar (50) NOT NULL ,
+        description Varchar (50) NOT NULL ,
+        prix        Double NOT NULL ,
+        temps       Time NOT NULL ,
+        id_admin    Int NOT NULL
+	,CONSTRAINT Annonce_PK PRIMARY KEY (num_annonc)
+
+	,CONSTRAINT Annonce_Admin_FK FOREIGN KEY (id_admin) REFERENCES Admin(id_admin)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: utilisateur
+#------------------------------------------------------------
+
+CREATE TABLE utilisateur(
+        id_utilisateur Int  Auto_increment  NOT NULL ,
+        login          Varchar (50) NOT NULL ,
+        password       Varchar (50) NOT NULL
+	,CONSTRAINT utilisateur_PK PRIMARY KEY (id_utilisateur)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: composer
+#------------------------------------------------------------
+
+CREATE TABLE composer(
+        num_annonc  Int NOT NULL ,
+        id_commande Int NOT NULL
+	,CONSTRAINT composer_PK PRIMARY KEY (num_annonc,id_commande)
+
+	,CONSTRAINT composer_Annonce_FK FOREIGN KEY (num_annonc) REFERENCES Annonce(num_annonc)
+	,CONSTRAINT composer_Commande0_FK FOREIGN KEY (id_commande) REFERENCES Commande(id_commande)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: consulter
+#------------------------------------------------------------
+
+CREATE TABLE consulter(
+        num_annonc     Int NOT NULL ,
+        id_utilisateur Int NOT NULL
+	,CONSTRAINT consulter_PK PRIMARY KEY (num_annonc,id_utilisateur)
+
+	,CONSTRAINT consulter_Annonce_FK FOREIGN KEY (num_annonc) REFERENCES Annonce(num_annonc)
+	,CONSTRAINT consulter_utilisateur0_FK FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur)
+)ENGINE=I
