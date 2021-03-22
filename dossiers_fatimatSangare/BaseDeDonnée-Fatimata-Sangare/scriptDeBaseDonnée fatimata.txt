@@ -1,0 +1,156 @@
+REM -----------------------------------------------------------------------------
+REM                Génération d'une base de données
+REM                         SQL Générique (SQL 2)
+REM                           (11/3/2021 14:38:47)
+REM -----------------------------------------------------------------------------
+REM      Nom de la base : MLR3Fatimata
+REM      Projet : Espace de travail
+REM      Auteur : fat
+REM      Date de dernière modification : 11/3/2021 13:50:17
+REM -----------------------------------------------------------------------------
+
+DROP TABLE BESOIN;
+
+DROP TABLE ADMINISTRATEUR;
+
+DROP TABLE DEVELOPPEUR;
+
+DROP TABLE CLIENT;
+
+DROP TABLE TRAITER;
+
+REM -----------------------------------------------------------------------------
+REM       TABLE : BESOIN
+REM -----------------------------------------------------------------------------
+
+CREATE TABLE BESOIN
+   (
+   ID DB_TEXT, 0 NOT NULL ,
+   IDCLIENT DB_TEXT, 0 NOT NULL ,
+   IDENTREPRISE DB_TEXT, 0 NOT NULL ,
+   DESCRIPTION DB_TEXT, 0  ,
+   DELAIS DB_TEXT, 0  ,
+   PRIX DB_TEXT, 0  
+,
+     PRIMARY KEY (ID) CONSTRAINT PK_BESOIN
+   );
+
+REM -----------------------------------------------------------------------------
+REM       INDEX DE LA TABLE BESOIN
+REM -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_BESOIN_CLIENT
+     ON BESOIN (IDCLIENT ASC);
+
+CREATE  INDEX I_FK_BESOIN_ADMINISTRATEUR
+     ON BESOIN (IDENTREPRISE ASC);
+
+REM -----------------------------------------------------------------------------
+REM       TABLE : ADMINISTRATEUR
+REM -----------------------------------------------------------------------------
+
+CREATE TABLE ADMINISTRATEUR
+   (
+   IDENTREPRISE DB_TEXT, 0 NOT NULL ,
+   IDDEVELOP DB_LONG(4) NOT NULL ,
+   LOGIN DB_TEXT, 0  ,
+   MOTDEPASSE DB_TEXT, 0  
+,
+     PRIMARY KEY (IDENTREPRISE) CONSTRAINT PK_ADMINISTRATEUR
+   );
+
+REM -----------------------------------------------------------------------------
+REM       INDEX DE LA TABLE ADMINISTRATEUR
+REM -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_ADMINISTRATEUR_DEVELOPPEUR
+     ON ADMINISTRATEUR (IDDEVELOP ASC);
+
+REM -----------------------------------------------------------------------------
+REM       TABLE : DEVELOPPEUR
+REM -----------------------------------------------------------------------------
+
+CREATE TABLE DEVELOPPEUR
+   (
+   IDDEVELOP DB_LONG(4) NOT NULL ,
+   NOMDEVELOP DB_TEXT, 255  ,
+   PRENOMDEVELOP DB_TEXT, 255  ,
+   CONTACTDEVELOP DB_TEXT, 0  ,
+   COMPÉTENCE DB_TEXT, 255  ,
+   MAILDEVELOP DB_TEXT, 255  ,
+   ADRESSEDEVELOP DB_TEXT, 255  
+,
+     PRIMARY KEY (IDDEVELOP) CONSTRAINT PK_DEVELOPPEUR
+   );
+
+REM -----------------------------------------------------------------------------
+REM       TABLE : CLIENT
+REM -----------------------------------------------------------------------------
+
+CREATE TABLE CLIENT
+   (
+   IDCLIENT DB_TEXT, 0 NOT NULL ,
+   NOMCLIENT DB_TEXT, 255  ,
+   PRENOMCLIENT DB_TEXT, 255  ,
+   CONTACTCLIENT DB_TEXT, 0  ,
+   ADRESSECLIENT DB_TEXT, 0  ,
+   MAILCLIENT DB_TEXT, 0  ,
+   NOMENTREPISE DB_TEXT, 0  
+,
+     PRIMARY KEY (IDCLIENT) CONSTRAINT PK_CLIENT
+   );
+
+REM -----------------------------------------------------------------------------
+REM       TABLE : TRAITER
+REM -----------------------------------------------------------------------------
+
+CREATE TABLE TRAITER
+   (
+   ID DB_TEXT, 0 NOT NULL ,
+   IDDEVELOP DB_LONG(4) NOT NULL ,
+   OFFRES DB_TEXT, 0  ,
+   FINALISÉ DB_TEXT, 0  ,
+   AVIS DB_TEXT, 0  
+,
+     PRIMARY KEY (ID, IDDEVELOP) CONSTRAINT PK_TRAITER
+   );
+
+REM -----------------------------------------------------------------------------
+REM       INDEX DE LA TABLE TRAITER
+REM -----------------------------------------------------------------------------
+
+CREATE  INDEX I_FK_TRAITER_BESOIN
+     ON TRAITER (ID ASC);
+
+CREATE  INDEX I_FK_TRAITER_DEVELOPPEUR
+     ON TRAITER (IDDEVELOP ASC);
+
+
+REM -----------------------------------------------------------------------------
+REM       CREATION DES REFERENCES DE TABLE
+REM -----------------------------------------------------------------------------
+
+ALTER TABLE BESOIN ADD (FOREIGN KEY (IDCLIENT)
+      REFERENCES CLIENT (IDCLIENT)
+      CONSTRAINT FK_BESOIN_CLIENT );
+
+ALTER TABLE BESOIN ADD (FOREIGN KEY (IDENTREPRISE)
+      REFERENCES ADMINISTRATEUR (IDENTREPRISE)
+      CONSTRAINT FK_BESOIN_ADMINISTRATEUR );
+
+ALTER TABLE ADMINISTRATEUR ADD (FOREIGN KEY (IDDEVELOP)
+      REFERENCES DEVELOPPEUR (IDDEVELOP)
+      CONSTRAINT FK_ADMINISTRATEUR_DEVELOPPEUR );
+
+ALTER TABLE TRAITER ADD (FOREIGN KEY (ID)
+      REFERENCES BESOIN (ID)
+      CONSTRAINT FK_TRAITER_BESOIN );
+
+ALTER TABLE TRAITER ADD (FOREIGN KEY (IDDEVELOP)
+      REFERENCES DEVELOPPEUR (IDDEVELOP)
+      CONSTRAINT FK_TRAITER_DEVELOPPEUR );
+
+
+REM -----------------------------------------------------------------------------
+REM                FIN DE GENERATION
+REM -----------------------------------------------------------------------------
